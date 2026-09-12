@@ -3,13 +3,14 @@ package com.carrental.Web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.carrental.Service.basicService;
+import com.carrental.Service.BasicService;
 
+@CrossOrigin 
 @RestController
-public class basicController {
+public class BasicController {
     
     @Autowired
-    basicService baseService;
+    BasicService baseService;
 
     @GetMapping("/")
     public String hello() {

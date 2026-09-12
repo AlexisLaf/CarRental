@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>CarRental Site</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <!-- <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script> -->
+    <script>
+        const url="http://localhost:4920"
+
+        hello_req = async (el) => {
+            const res = await fetch(url)
+            if (res.ok) {
+                const data = await res.text()
+                //CAREFULL THIS IS A POSSIBLE CODE INJECTION TO HAPPEN!!
+                child = document.createElement("span").textContent = JSON.stringify(data)
+                el.after(child)
+            }
+        }
+
+        getcar_req = async (el) => {
+            const res = await fetch(url + "/cars")
+            if (res.ok) {
+                const data = await res.json()
+                //CAREFULL THIS IS A POSSIBLE CODE INJECTION TO HAPPEN!!
+                child = document.createElement("span").textContent = JSON.stringify(data)
+                el.after(child)
+            } else {
+                child = document.createElement("span").textContent = await res.text()
+                el.after(child)
+            }
+        }
+        get_form_request = async (event) => {
+            //Would need to add a protection against attacks.
+            const res = await fetch(url + "/cars/"+event.target[0].value)
+            if (res.ok) {
+                const data = await res.json()
+                //CAREFULL THIS IS A POSSIBLE CODE INJECTION TO HAPPEN!!
+                child = document.createElement("span").textContent = JSON.stringify(data) 
+                event.target.after(child)
+            } else {
+                child = document.createElement("span").textContent = await res.text()
+                event.target.after(child)
+            }
+        }
+        
+
+        put_form_request = async (event) => {
+            //Would need to add a protection against attacks.
+            const res = await fetch(url + "/cars/"+event.target[1].value+"?rent="+(event.target[2].checked+0), {
+                method:"PUT",
+                headers:{'content-type': 'application/json'},
+                body:JSON.stringify({start_date:event.target[3].value,end_date:event.target[4].value})
+            })
+            if (res.ok) {
+                const data = await res.json()
+                //CAREFULL THIS IS A POSSIBLE CODE INJECTION TO HAPPEN!!
+                child = document.createElement("span").textContent = JSON.stringify(data)
+                event.target.after(child)
+            } else {
+                child = document.createElement("span").textContent = await res.text()
+                event.target.after(child)
+            }
+        }
+
+        window.addEventListener("load", e =>{
+            //Put the function in an eventlistener to get called.
+            const getform = document.getElementById("getForm")
+            getform.addEventListener("submit",get_form_request)
+            const putform = document.getElementById("putForm")
+            putform.addEventListener("submit",put_form_request)
+        })
+
+    </script>
+</head>
+<body>
+    <h1>Rent a Car in ....</h1>
+    <p> You can rent a car for one month here, you will just need to show up in person to pay.</p>
+    <pre>        _______
+       //  ||\ \
+ _____//___||_\ \___
+ )  _          _    \
+ |_/ \________/ \___|
+___\_/________\_/______
+
+~From: Colin Douthwaite</pre>
+    <button onclick="hello_req(this)">Say Hello!</button><br>
+    <button onclick="getcar_req(this)">Get available cars</button><br>
+    <form name="Specific_Car" method="get" onsubmit="return false;" id="getForm">
+        <input type="text" name="platenum" required maxlength="8" minlength="4">
+        <button>Get information on a specific car.</button>
+    </form>
+    <form name="RentCar" method="post" onsubmit="return false" id="putForm">
+        <input type="hidden" name="_METHOD" value="PUT"/>
+        <input type="text" name="platenum" required maxlength="8" minlength="4">
+        <input type="checkbox" name="rent">
+        <input type="date" name="start-date">
+        <input type="date" name="end-date">
+        <button>Rent the selected car.</button>
+    </form>
+
+    <h6><small>FavIcon by <a href="https://www.flaticon.com/authors/smashicons">SmashIcons</a></small></h6>
+</body>

@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.logging.Logger;
 
+import com.carrental.Exceptions.AlreadyRentedException;
 import com.carrental.utils.TimeConversion;
 
 public class Car {
     String platenum;
     String brand;
-    Integer price;
-    boolean rented = false;
+    Double price;
+    boolean rented;
     ArrayList<Rents> RentsTimes; 
 
     Comparator<Rents> sortRentTimes = (r1,r2) -> {
@@ -23,20 +24,23 @@ public class Car {
         }
     };
 
-    public Car(String platenum, String brand, Integer price){
+    public Car(String platenum, String brand, Double price){
         this.platenum=platenum;
         this.brand=brand;
         this.price=price;
+        this.rented=false;
 
         this.RentsTimes = new ArrayList<Rents>();
     }
 
-    public void rentCar(Rents rent_time){
+    public void rentCar(Rents rent_time) throws AlreadyRentedException {
+        if (this.rented == true) {throw new AlreadyRentedException("This car, "+this.platenum+" is already rented until "+lastRentEndTime()+".");}
         this.rented = true;
         this.RentsTimes.add(rent_time);
     }
 
-    public void rentCar(LocalDateTime rentStart, LocalDateTime rentEnd){
+    public void rentCar(LocalDateTime rentStart, LocalDateTime rentEnd) throws AlreadyRentedException {
+        if (this.rented == true) {throw new AlreadyRentedException("This car, "+this.platenum+" is already rented until "+lastRentEndTime()+".");}
         this.rented=true;
         this.RentsTimes.add(new Rents(rentStart,rentEnd));
     }
@@ -62,7 +66,31 @@ public class Car {
         return lastRent().endDate().toString(); 
     }
 
-    public String GetPlanenum(){
+    public String getPlanenum(){
         return this.platenum;
+    }
+
+    public String getBrand(){
+        return this.brand;
+    }
+
+    public Double getPrice(){
+        return this.price;
+    }
+
+    public boolean getRented(){
+        return this.rented;
+    }
+
+    public void setPlatenum(String platenumber){
+        this.platenum = platenumber;
+    }
+
+    public void setBrandname(String brandname){
+        this.brand = brandname;
+    }
+
+    public void setPrice(Double price){
+        this.price = price;
     }
 }

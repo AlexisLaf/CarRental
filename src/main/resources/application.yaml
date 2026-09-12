@@ -1,3 +1,17 @@
 spring:
   application:
-    name: carrental
+    name: "carrental"
+    version: ${version}
+server:
+  port: 4920
+  error:
+    include-message: "always"
+    include-stacktrace: "always"
+logging:
+  level: 
+    root: "DEBUG"
+    org.springframework.http: "trace"
+  file:
+    path: log/run/
+# A lot of information was from the official spring docs, 
+# https://docs.spring.io/spring-boot/reference/features/logging.html
